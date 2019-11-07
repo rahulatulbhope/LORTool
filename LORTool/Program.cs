@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace LORTool
 {
@@ -28,21 +29,52 @@ namespace LORTool
                 }
             }
 
+            ProfGrp profG = new ProfGrp();
+            profG.Name1 = "";
+            profG.Name2 = "";
+            profG.Name3 = "";
+            profG.score_tot = 0;
+            profGrps.Add(profG);
+
+            var filePath = @"C:\Users\N1801715E\Downloads\Accl_data\6_21_2019\5\new_data_features_1.csv";
+            var csv = new StringBuilder();
+
+
             for (int i = 0; i < profList.Count; i++)
             {
                 for (int j = 0; j < profList.Count; j++)
                 {
                     for (int k = 0; k < profList.Count; k++)
                     {
-                        if (profList[i].Name != profList[j].Name && profList[k].Name != profList[j].Name && profList[i].Name != profList[k].Name)
+                        if (nameeq(profList[i].Name, profList[j].Name, profList[k].Name) && no_check(profList[i].number, profList[j].number, profList[k].number))
                         {
                             int score_temp = profList[i].score + profList[j].score + profList[k].score;
+                            for (int m = 0; m < profGrps.Count; m++)
+                            {
+                                if (score_temp > profGrps[m].score_tot)
+                                {
+                                    ProfGrp profGrpn = new ProfGrp();
+                                    profGrpn.Name1 = profList[i].Name;
+                                    profGrpn.Name2 = profList[j].Name;
+                                    profGrpn.Name3 = profList[k].Name;
+                                    profGrpn.score_tot = score_temp;
+                                    profGrps.Add(profGrpn);
 
+                                    profList[i].number--;
+                                    profList[j].number--;
+                                    profList[k].number--;
+
+                                }
+                            }
                         }
                     }
                 }
             }
 
+            for (int b = 0; b < profGrps.Count; b++)
+            {
+                Console.WriteLine(profGrps[b].Name1 + "\t" + profGrps[b].Name2 + "\t" + profGrps[b].Name3 + "\t" + profGrps[b].score_tot);
+            }
         }
 
         static Boolean nameeq(string name1, string name2, string name3)
@@ -61,11 +93,7 @@ namespace LORTool
                 return false;
             else
                 return true;
-        }
-
-        
-
-        
+        } 
     }
 
     public class Prof
@@ -81,6 +109,7 @@ namespace LORTool
         public string Name2 { get; set; }
 
         public string Name3 { get; set; }
+        public int score_tot { get; set; }
 
 
     }
